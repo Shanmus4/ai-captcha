@@ -1,0 +1,208 @@
+{
+  "master": {
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Initialize React Project with TypeScript and Tailwind CSS",
+        "description": "Set up the foundational React single-page application using Create React App or Vite. Integrate TypeScript for type safety and configure Tailwind CSS for utility-first styling.",
+        "details": "Use `npx create-react-app grumpy-captcha --template typescript`. Follow the official Tailwind CSS guide to integrate it with the React project. Set up basic project structure with `src/components`, `src/hooks`, `src/services`, and `src/assets` directories.",
+        "testStrategy": "Verify that the application runs without errors (`npm start`). Confirm that Tailwind CSS utility classes can be applied to a component and are reflected in the browser. Ensure TypeScript compiles successfully.",
+        "priority": "high",
+        "dependencies": [],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 2,
+        "title": "Create Core UI Components",
+        "description": "Develop the main UI components for the captcha interface: the container for the cat animation, a styled text input area, and the primary action button.",
+        "details": "Create a `CaptchaContainer.tsx`, `TextInput.tsx`, and `SubmitButton.tsx`. Use Tailwind CSS for styling to ensure a clean, minimalist interface. The button should support different visual states (neutral, success, error) via props.",
+        "testStrategy": "Use Storybook or a similar tool to render and visually inspect each component in isolation. Test the button's state changes by passing different props and verifying the color and icon changes.",
+        "priority": "high",
+        "dependencies": [
+          1
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 3,
+        "title": "Integrate Lottie Animation Player",
+        "description": "Integrate the Lottie web player into the React application to render the cat character animations. Load and display the initial 'grumpy' cat animation.",
+        "details": "Install the `lottie-react` library. Create a `CatAnimation.tsx` component that uses the Lottie player. Load a placeholder 'grumpy' Lottie JSON file from the `src/assets` directory. The component should accept an animation data prop.",
+        "testStrategy": "Verify the grumpy cat animation renders correctly within the `CaptchaContainer` component. Check browser console for any Lottie-related errors. Ensure the animation plays smoothly.",
+        "priority": "high",
+        "dependencies": [
+          1
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 4,
+        "title": "Implement Frontend State Management",
+        "description": "Set up state management using React hooks (`useState`, `useReducer`) to handle the captcha's overall state, including user input, completion status, and current emotion.",
+        "details": "Create a custom hook, `useCaptchaState`, that encapsulates the logic defined in the `CaptchaState` interface from the PRD. It should manage `isComplete`, `currentEmotion`, `userInput`, and `buttonState`.",
+        "testStrategy": "Write unit tests for the `useCaptchaState` hook to ensure state transitions work as expected. Test that updating user input via a text field correctly updates the state.",
+        "priority": "high",
+        "dependencies": [
+          1
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 5,
+        "title": "Develop LLM API Integration Layer",
+        "description": "Create a dedicated service module to handle all communications with the LLM API (e.g., OpenAI). This layer will abstract the API calls and handle authentication.",
+        "details": "Create `src/services/aiService.ts`. Use `axios` or the native `fetch` API to make POST requests to the LLM endpoint. The service should expose a function like `analyzeText(text: string)` and handle the API key securely using environment variables (`REACT_APP_OPENAI_KEY`).",
+        "testStrategy": "Create mock API tests using a library like `msw` or `jest.mock` to simulate successful and failed API responses without making real network calls. Verify that the correct headers and body are sent.",
+        "priority": "high",
+        "dependencies": [
+          1
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 6,
+        "title": "Implement Sentiment and Humor Analysis Logic",
+        "description": "Develop the core logic that sends user input to the LLM and parses the response to determine sentiment, humor, and appropriateness, matching the `AIAnalysis` data model.",
+        "details": "In `aiService.ts`, craft a specific prompt for the LLM. The prompt should instruct the AI to return a JSON object with fields like `sentiment`, `humorScore`, and `isAppropriate`. Implement robust parsing and validation for the AI's response.",
+        "testStrategy": "Unit test the parsing logic with various sample JSON responses from the AI, including malformed ones. Test the full flow with a few sample jokes and appreciative comments against the actual API (in a dev environment) to validate prompt effectiveness.",
+        "priority": "high",
+        "dependencies": [
+          5
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 7,
+        "title": "Connect AI Analysis to UI State and Feedback",
+        "description": "Integrate the AI analysis result into the main application flow. Update the captcha state based on the AI's response, triggering changes in the button's appearance and the overall completion status.",
+        "details": "When the user clicks the submit button, call the `analyzeText` service. On a successful response, use the `useCaptchaState` hook's setters to update `currentEmotion`, `buttonState` ('success' or 'error'), and `isComplete` based on the `humorScore` and `sentiment`.",
+        "testStrategy": "Perform end-to-end testing. Type a 'happy' message, submit, and verify the button turns green and the state updates to complete. Type a 'negative' message and verify the button turns red.",
+        "priority": "high",
+        "dependencies": [
+          4,
+          6
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 8,
+        "title": "Implement Loading and API Error States",
+        "description": "Provide clear visual feedback to the user while the AI is processing their input and handle potential API failures gracefully.",
+        "details": "Add a `isLoading` state to the `useCaptchaState` hook. When `isLoading` is true, disable the text input and submit button, and show a loading spinner or animation. If the API call fails, display an error message to the user and reset the button to a neutral state.",
+        "testStrategy": "Use browser developer tools to throttle the network connection and verify the loading state appears correctly. Use mock API tests to simulate a network error or a 500 status code and confirm that a user-friendly error message is displayed.",
+        "priority": "medium",
+        "dependencies": [
+          7
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 9,
+        "title": "Integrate Multiple Lottie Animation Assets",
+        "description": "Source and integrate the Lottie JSON files for all required emotional states: happy, sad, and angry, in addition to the default grumpy state.",
+        "details": "Obtain or create optimized Lottie JSON files (under 500KB each). Place them in `src/assets/animations`. Create a mapping object or enum that associates emotion strings ('happy', 'sad', etc.) with their corresponding Lottie animation data.",
+        "testStrategy": "Update the `CatAnimation` component to be able to load each new animation. Temporarily add buttons to the UI to trigger each emotion and verify that the correct animation plays.",
+        "priority": "medium",
+        "dependencies": [
+          3
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 10,
+        "title": "Develop Dynamic Animation Controller",
+        "description": "Create a system that dynamically switches the displayed Lottie animation based on the `currentEmotion` property in the global state, with smooth transitions.",
+        "details": "Modify the `CatAnimation` component to take the `currentEmotion` as a prop. When this prop changes, it should load and play the corresponding animation from the asset map. Use the Lottie player's API to manage transitions, potentially playing a short transition animation if available.",
+        "testStrategy": "Connect the component to the main state. Perform an end-to-end test: submit a joke, and verify that on a successful AI response, the `currentEmotion` state changes to 'happy' and the cat animation updates accordingly.",
+        "priority": "high",
+        "dependencies": [
+          7,
+          9
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 11,
+        "title": "Implement Continuous Idle Animation Loop",
+        "description": "Ensure the base 'grumpy' animation plays on a continuous loop when the application is idle and is correctly interrupted by other emotional animations.",
+        "details": "In the `CatAnimation` component, configure the Lottie player options to loop the default animation. When a new emotion is triggered, the loop should be stopped, the new animation played once, and then it should revert to the looping idle animation.",
+        "testStrategy": "Load the application and verify the grumpy animation loops indefinitely. Trigger a 'happy' animation and confirm it plays once and then returns to the grumpy loop.",
+        "priority": "medium",
+        "dependencies": [
+          10
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 12,
+        "title": "Implement Responsive Design for Mobile and Desktop",
+        "description": "Ensure the captcha interface is fully responsive and provides an optimal user experience on a wide range of screen sizes, from small mobile phones to large desktop monitors.",
+        "details": "Use Tailwind CSS's responsive prefixes (e.g., `sm:`, `md:`, `lg:`) to adjust layout, font sizes, and component dimensions. The cat animation should scale proportionally, and the text input and button must remain easily usable on small screens.",
+        "testStrategy": "Use browser developer tools to test the layout at various standard breakpoints (e.g., 360px, 768px, 1024px, 1440px). Test on at least one physical mobile device to check for touch input issues.",
+        "priority": "high",
+        "dependencies": [
+          2
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 13,
+        "title": "Enhance Accessibility (a11y)",
+        "description": "Improve the application's accessibility by ensuring it is navigable via keyboard, provides screen reader support, and meets color contrast guidelines.",
+        "details": "Add appropriate ARIA attributes (`aria-label`, `aria-live` for status updates). Ensure a logical tab order for keyboard navigation. Use a color contrast checker to verify that button text and icons meet WCAG AA standards. Add `for` attributes to labels for text inputs.",
+        "testStrategy": "Perform a full accessibility audit using browser tools like Lighthouse. Navigate the entire interface using only the keyboard (Tab, Shift+Tab, Enter, Space). Use a screen reader (e.g., NVDA, VoiceOver) to test the user flow.",
+        "priority": "medium",
+        "dependencies": [
+          2,
+          12
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 14,
+        "title": "Perform Cross-Browser Compatibility Testing",
+        "description": "Test the application on the latest versions of all target browsers to identify and fix any rendering or functional inconsistencies.",
+        "details": "Target browsers: latest Chrome, Firefox, Safari, and Edge. Manually test the full user flow on each browser. Pay close attention to CSS rendering (especially Flexbox/Grid), animation performance, and API communication.",
+        "testStrategy": "Create a testing checklist covering all core features. Execute the checklist on each target browser, documenting any bugs or visual glitches with screenshots and steps to reproduce.",
+        "priority": "low",
+        "dependencies": [
+          11,
+          12
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 15,
+        "title": "Configure Deployment and Environment Variables",
+        "description": "Set up a CI/CD pipeline for automated builds and deployments to a static hosting provider like Vercel or Netlify. Configure environment variables for production.",
+        "details": "Connect the GitHub repository to Vercel/Netlify. Configure the build command (`npm run build`) and output directory. Set up production environment variables (e.g., `REACT_APP_OPENAI_KEY`) in the hosting provider's dashboard, not in the repository.",
+        "testStrategy": "Push a commit to the main branch and verify that a new build is automatically triggered and deployed. Access the production URL and confirm the application is fully functional and the API key is being used correctly.",
+        "priority": "high",
+        "dependencies": [
+          14
+        ],
+        "status": "pending",
+        "subtasks": []
+      }
+    ],
+    "metadata": {
+      "created": "2025-07-26T04:57:00.812Z",
+      "updated": "2025-07-26T04:57:00.812Z",
+      "description": "Tasks for master context"
+    }
+  }
+}
