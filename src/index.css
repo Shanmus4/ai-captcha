@@ -22,6 +22,7 @@
     max-width: 412px;
     height: 80vh;
     padding-top: 10vh; /* Added padding-top */
+    transform: scale(0.85);
   }
   
   .text-group {
@@ -62,7 +63,7 @@
   }
 
   .ai-reasoning-bubble {
-    @apply relative bg-yellow-200 p-4 rounded-lg shadow-md text-gray-800 font-comic text-center w-full text-sm; /* Reduced font size */
+    @apply relative bg-yellow-200 p-4 rounded-lg shadow-md text-gray-800 text-center w-full text-sm; /* Reduced font size */
     margin-top: 1.5rem; /* Adjust as needed */
     margin-bottom: 1.5rem; /* Adjust as needed */
     min-height: 0; /* Ensure it always takes up space */

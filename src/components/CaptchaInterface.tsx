@@ -8,7 +8,12 @@ import { logUserInput } from '../services/logService'
 
 const aiService = new AIService()
 
-const CaptchaInterface: React.FC = () => {
+interface CaptchaInterfaceProps {
+    isSpeechBubbleVisible: boolean;
+    setIsSpeechBubbleVisible: (isVisible: boolean) => void;
+}
+
+const CaptchaInterface: React.FC<CaptchaInterfaceProps> = ({ isSpeechBubbleVisible, setIsSpeechBubbleVisible }) => {
     const [captchaState, setCaptchaState] = useState<CaptchaState>({
         isComplete: false,
         currentEmotion: 'grumpy',
@@ -30,6 +35,7 @@ const CaptchaInterface: React.FC = () => {
             aiReasoning: '',
             displayButtonText: 'Tell Grumpy Cat' // Reset button text on new input
         }))
+        setIsSpeechBubbleVisible(false);
     }
 
     const handleSubmit = async () => {
@@ -88,6 +94,8 @@ const CaptchaInterface: React.FC = () => {
                 displayButtonText: newDisplayButtonText
             }))
 
+            setIsSpeechBubbleVisible(true);
+
             console.log('AI Analysis:', analysis)
             console.log('Reasoning from AI:', analysis.reasoning)
 
@@ -110,6 +118,8 @@ const CaptchaInterface: React.FC = () => {
                 aiReasoning: errorMessage,
                 displayButtonText: 'Try Again' // Set button text to Try Again on error
             }))
+
+            setIsSpeechBubbleVisible(true);
         }
     }
 
@@ -123,6 +133,7 @@ const CaptchaInterface: React.FC = () => {
             aiReasoning: '',
             displayButtonText: 'Tell Grumpy Cat' // Reset button text
         })
+        setIsSpeechBubbleVisible(false);
     }
 
     return (

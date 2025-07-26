@@ -49,7 +49,7 @@ export default {
         }
       },
       fontFamily: {
-        comic: ['Comic Sans MS', 'cursive'],
+        sans: ['system-ui', 'sans-serif'],
       },
       animation: {
         'bounce-slow': 'bounce 2s infinite',
