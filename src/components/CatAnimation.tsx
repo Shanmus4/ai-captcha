@@ -78,13 +78,7 @@ const CatAnimation: React.FC<CatAnimationProps> = ({ emotion }) => {
                         justifyContent: 'center'
                     }}
                 >
-                    {/* Fallback emoji if Lottie fails to load */}
-                    <span className="text-4xl">
-                        {emotion === 'happy' && '😊'}
-                        {emotion === 'sad' && '😢'}
-                        {emotion === 'grumpy' && '😒'}
-                        {emotion === 'bored' && '😑'}
-                    </span>
+                    {/* Fallback emoji if Lottie fails to load - REMOVED */}
                 </div>
                 {/* Removed the <p> tag displaying cat emotion */}
             </div>
