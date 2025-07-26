@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect } from 'react'
 import { Emotion } from '../types/captcha'
 import { Loader2 } from 'lucide-react'
 
@@ -8,8 +8,9 @@ interface CatAnimationProps {
 }
 
 const CatAnimation: React.FC<CatAnimationProps> = ({ emotion, isLoading }) => {
-    const containerRef = useRef<HTMLDivElement>(null)
-    const animationRef = useRef<any>(null)
+    // TODO: Implement Lottie animation container and refs
+    // const containerRef = useRef<HTMLDivElement>(null)
+    // const animationRef = useRef<any>(null)
 
     useEffect(() => {
         // TODO: Implement Lottie animation loading

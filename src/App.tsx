@@ -1,4 +1,3 @@
-import React from 'react'
 import CaptchaInterface from './components/CaptchaInterface'
 
 function App() {

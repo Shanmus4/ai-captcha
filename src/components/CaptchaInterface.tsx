@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import CatAnimation from './CatAnimation'
 import TextInput from './TextInput'
 import SubmitButton from './SubmitButton'
-import { CaptchaState, Emotion } from '../types/captcha'
+import { CaptchaState } from '../types/captcha'
 
 const CaptchaInterface: React.FC = () => {
     const [captchaState, setCaptchaState] = useState<CaptchaState>({
