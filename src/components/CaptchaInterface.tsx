@@ -9,11 +9,10 @@ import { logUserInput } from '../services/logService'
 const aiService = new AIService()
 
 interface CaptchaInterfaceProps {
-    isSpeechBubbleVisible: boolean;
     setIsSpeechBubbleVisible: (isVisible: boolean) => void;
 }
 
-const CaptchaInterface: React.FC<CaptchaInterfaceProps> = ({ isSpeechBubbleVisible, setIsSpeechBubbleVisible }) => {
+const CaptchaInterface: React.FC<CaptchaInterfaceProps> = ({ setIsSpeechBubbleVisible }) => {
     const [captchaState, setCaptchaState] = useState<CaptchaState>({
         isComplete: false,
         currentEmotion: 'grumpy',

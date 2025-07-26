@@ -14,7 +14,7 @@ function App() {
                     Make the cat happy with a joke or kind words!
                 </p>
                 </div>
-            <CaptchaInterface isSpeechBubbleVisible={isSpeechBubbleVisible} setIsSpeechBubbleVisible={setIsSpeechBubbleVisible} />
+            <CaptchaInterface setIsSpeechBubbleVisible={setIsSpeechBubbleVisible} />
             {!isSpeechBubbleVisible && (
                 <p className="github-link text-center text-gray-500 text-sm">
                     GitHub: <a href="https://github.com/Shanmus4/ai-captcha" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">Shanmus4/ai-captcha</a>
