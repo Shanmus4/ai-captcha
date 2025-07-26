@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useRef } from 'react'
+﻿import React, { useEffect, useRef, useState } from 'react'
 import { Emotion } from '../types/captcha'
 import lottie from 'lottie-web'
 
@@ -8,9 +8,14 @@ interface CatAnimationProps {
 
 const CatAnimation: React.FC<CatAnimationProps> = ({ emotion }) => {
     const containerRef = useRef<HTMLDivElement>(null)
-    const animationRef = useRef<any>(null)
+    const animationInstanceRef = useRef<any>(null)
+    const [loadedAnimations, setLoadedAnimations] = useState<Record<Emotion, any | null>>({
+        grumpy: null,
+        happy: null,
+        sad: null,
+        bored: null,
+    });
 
-    // Animation paths for different emotions
     const animationPaths = {
         grumpy: '/animations/cat-grumpy.json',
         happy: '/animations/cat-happy.json',
@@ -18,72 +23,77 @@ const CatAnimation: React.FC<CatAnimationProps> = ({ emotion }) => {
         bored: '/animations/cat-bored.json'
     }
 
+    // Preload all animations on mount
     useEffect(() => {
-        if (!containerRef.current) return
+        const loadAnimations = async () => {
+            const newLoadedAnimations: Record<Emotion, any> = { ...loadedAnimations };
+            for (const key in animationPaths) {
+                const emotionKey = key as Emotion;
+                const path = animationPaths[emotionKey];
+                try {
+                    const response = await fetch(path);
+                    const animationData = await response.json();
+                    newLoadedAnimations[emotionKey] = animationData;
+                } catch (error) {
+                    console.error(`Failed to load animation ${path}:`, error);
+                }
+            }
+            setLoadedAnimations(newLoadedAnimations);
+        };
 
-        // Destroy previous animation
-        if (animationRef.current) {
-            animationRef.current.destroy()
+        loadAnimations();
+    }, []); // Run only once on mount
+
+    useEffect(() => {
+        if (!containerRef.current || !loadedAnimations[emotion]) return;
+
+        // Destroy previous animation instance
+        if (animationInstanceRef.current) {
+            animationInstanceRef.current.destroy();
         }
 
-        // Load new animation
-        const animationPath = animationPaths[emotion]
-        
-        // For now, use placeholder animations until you provide the actual Lottie files
-        // You'll need to provide these JSON files in the public/animations/ directory
-        console.log('Loading Lottie animation:', animationPath)
-        
-        try {
-            animationRef.current = lottie.loadAnimation({
-                container: containerRef.current,
-                renderer: 'svg',
-                loop: emotion === 'grumpy' || emotion === 'bored' || emotion === 'sad' || emotion === 'happy', // Grumpy, bored, sad, and happy loop continuously
-                autoplay: true,
-                path: animationPath
-            })
+        // Load and play new animation
+        animationInstanceRef.current = lottie.loadAnimation({
+            container: containerRef.current,
+            renderer: 'svg',
+            loop: emotion === 'grumpy' || emotion === 'bored' || emotion === 'sad' || emotion === 'happy',
+            autoplay: true,
+            animationData: loadedAnimations[emotion],
+        });
 
-            // Handle animation events
-            animationRef.current.addEventListener('data_ready', () => {
-                console.log('Animation loaded successfully')
-            })
+        animationInstanceRef.current.addEventListener('data_ready', () => {
+            console.log(`Animation for ${emotion} loaded successfully`);
+        });
 
-            animationRef.current.addEventListener('error', (error: any) => {
-                console.error('Animation loading failed:', error)
-                // Fallback to emoji if animation fails
-            })
-
-        } catch (error) {
-            console.error('Failed to load Lottie animation:', error)
-        }
+        animationInstanceRef.current.addEventListener('error', (error: any) => {
+            console.error(`Animation for ${emotion} failed:`, error);
+        });
 
         // Cleanup on unmount or emotion change
         return () => {
-            if (animationRef.current) {
-                animationRef.current.destroy()
+            if (animationInstanceRef.current) {
+                animationInstanceRef.current.destroy();
             }
-        }
-    }, [emotion]) // Removed isLoading from dependency array
+        };
+    }, [emotion, loadedAnimations]);
 
     return (
         <div className="cat-animation-container">
             <div className="text-center">
-                {/* Lottie animation container */}
                 <div 
                     ref={containerRef} 
-                    className="w-full h-full mx-auto mb-4" // Changed to w-full h-full
-                    style={{ 
+                    className="w-full h-full mx-auto mb-4" 
+                    style={{
                         minHeight: '128px',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center'
                     }}
                 >
-                    {/* Fallback emoji if Lottie fails to load - REMOVED */}
                 </div>
-                {/* Removed the <p> tag displaying cat emotion */}
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default CatAnimation
+export default CatAnimation;
