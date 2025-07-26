@@ -4,7 +4,7 @@ An interactive captcha system featuring a grumpy cat that users must make happy 
 
 ## 🚀 Live Demo
 
-[Coming Soon - Deploy to Vercel/Netlify]
+[https://grumpycaptcha.netlify.app](https://grumpycaptcha.netlify.app)
 
 ## 📋 Table of Contents
 

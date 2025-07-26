@@ -8,6 +8,8 @@ export interface CaptchaState {
     userInput: string
     buttonState: ButtonState
     isLoading: boolean
+    aiReasoning: string; // Added aiReasoning
+    displayButtonText: string; // Added displayButtonText
 }
 
 export interface AIAnalysis {
