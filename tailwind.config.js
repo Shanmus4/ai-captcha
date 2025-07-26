@@ -44,6 +44,9 @@ export default {
           900: '#7f1d1d',
         }
       },
+      fontFamily: {
+        comic: ['Comic Sans MS', 'cursive'],
+      },
       animation: {
         'bounce-slow': 'bounce 2s infinite',
         'pulse-slow': 'pulse 3s infinite',

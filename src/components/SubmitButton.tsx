@@ -7,21 +7,16 @@ interface SubmitButtonProps {
     state: ButtonState
     isLoading: boolean
     disabled: boolean
+    buttonText: string
 }
 
 const SubmitButton: React.FC<SubmitButtonProps> = ({
     onClick,
     state,
     isLoading,
-    disabled
+    disabled,
+    buttonText
 }) => {
-    const getButtonText = () => {
-        if (isLoading) return 'Analyzing...'
-        if (state === 'success') return 'Success!'
-        if (state === 'error') return 'Try Again'
-        return 'Make Cat Happy'
-    }
-
     const getButtonIcon = () => {
         if (isLoading) return <Loader2 className="w-5 h-5 animate-spin" />
         if (state === 'success') return <Check className="w-5 h-5" />
@@ -36,7 +31,7 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
             className={`submit-button ${state} flex items-center justify-center space-x-2`}
         >
             {getButtonIcon()}
-            <span>{getButtonText()}</span>
+            <span>{buttonText}</span>
         </button>
     )
 }

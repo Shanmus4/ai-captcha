@@ -2,8 +2,9 @@
 import CatAnimation from './CatAnimation'
 import TextInput from './TextInput'
 import SubmitButton from './SubmitButton'
-import { CaptchaState } from '../types/captcha'
-import AIService from '../services/aiService'
+import { CaptchaState, ButtonState } from '../types/captcha'
+import AIService, { Emotion } from '../services/aiService'
+import { logUserInput } from '../services/logService'
 
 const aiService = new AIService()
 
@@ -13,13 +14,21 @@ const CaptchaInterface: React.FC = () => {
         currentEmotion: 'grumpy',
         userInput: '',
         buttonState: 'neutral',
-        isLoading: false
+        isLoading: false,
+        aiReasoning: '',
+        displayButtonText: 'Tell Grumpy Cat' // New state for button text
     })
 
     const handleInputChange = (value: string) => {
         setCaptchaState(prev => ({
             ...prev,
-            userInput: value
+            userInput: value,
+            // Reset button state and emotion if user starts typing again after a response
+            buttonState: 'neutral',
+            currentEmotion: 'grumpy',
+            isComplete: false,
+            aiReasoning: '',
+            displayButtonText: 'Tell Grumpy Cat' // Reset button text on new input
         }))
     }
 
@@ -29,80 +38,118 @@ const CaptchaInterface: React.FC = () => {
         setCaptchaState(prev => ({
             ...prev,
             isLoading: true,
-            buttonState: 'neutral'
+            buttonState: 'neutral',
+            aiReasoning: '',
+            displayButtonText: 'Analyzing...' // Set analyzing text while loading
         }))
 
+        logUserInput(captchaState.userInput) // Log user input
+
         try {
-            // Use real AI analysis instead of random simulation
             const analysis = await aiService.analyzeUserInput(captchaState.userInput)
             
-            // Determine if the input is positive based on AI analysis
-            const isPositive = analysis.isFunny || analysis.isAppreciative
-            
-            // Set emotion based on AI analysis
-            let emotion: 'happy' | 'sad' | 'angry' | 'grumpy'
-            if (isPositive) {
-                emotion = 'happy'
-            } else if (analysis.sentiment === 'negative') {
-                emotion = 'angry'
-            } else {
-                emotion = 'sad'
+            let finalEmotion: Emotion = 'grumpy'; // Default to grumpy
+            let newButtonState: ButtonState = 'error';
+            let isComplete = false;
+            let newDisplayButtonText = 'Try Again';
+
+            // Map AI's emotion to UI emotion
+            switch (analysis.emotion) {
+                case 'happy':
+                    finalEmotion = 'happy';
+                    newButtonState = 'success';
+                    isComplete = true;
+                    newDisplayButtonText = 'Grumpy Cat is Happy!';
+                    break;
+                case 'sad':
+                    finalEmotion = 'sad';
+                    newButtonState = 'error';
+                    newDisplayButtonText = 'Try Again';
+                    break;
+                case 'bored':
+                    finalEmotion = 'bored'; // Map bored to bored animation
+                    newButtonState = 'error';
+                    newDisplayButtonText = 'Try Again';
+                    break;
+                default:
+                    finalEmotion = 'grumpy'; // Fallback for any unexpected AI emotion
+                    newButtonState = 'error';
+                    newDisplayButtonText = 'Try Again';
+                    break;
             }
 
             setCaptchaState(prev => ({
                 ...prev,
                 isLoading: false,
-                currentEmotion: emotion,
-                buttonState: isPositive ? 'success' : 'error',
-                isComplete: isPositive
+                currentEmotion: finalEmotion,
+                buttonState: newButtonState,
+                isComplete: isComplete,
+                aiReasoning: analysis.reasoning || '',
+                displayButtonText: newDisplayButtonText
             }))
 
-            // Log AI analysis for debugging
             console.log('AI Analysis:', analysis)
-            
-        } catch (error) {
+            console.log('Reasoning from AI:', analysis.reasoning)
+
+        } catch (error: any) {
             console.error('AI analysis failed:', error)
             
-            // Fallback to simulation if AI fails
-            const fallbackAnalysis = await aiService.simulateAnalysis(captchaState.userInput)
-            const isPositive = fallbackAnalysis.isFunny || fallbackAnalysis.isAppreciative
-            
+            let errorMessage = 'My circuits are fried. Try again.';
+            if (error.response && error.response.data && error.response.data.error) {
+                errorMessage = `Error: ${error.response.data.error.message}`;
+            } else if (error.message) {
+                errorMessage = `Error: ${error.message}`;
+            }
+
             setCaptchaState(prev => ({
                 ...prev,
                 isLoading: false,
-                currentEmotion: isPositive ? 'happy' : 'sad',
-                buttonState: isPositive ? 'success' : 'error',
-                isComplete: isPositive
+                currentEmotion: 'grumpy', // Default to grumpy on error
+                buttonState: 'error',
+                isComplete: false,
+                aiReasoning: errorMessage,
+                displayButtonText: 'Try Again' // Set button text to Try Again on error
             }))
         }
+    }
+
+    const handleReset = () => {
+        setCaptchaState({
+            isComplete: false,
+            currentEmotion: 'grumpy',
+            userInput: '',
+            buttonState: 'neutral',
+            isLoading: false,
+            aiReasoning: '',
+            displayButtonText: 'Tell Grumpy Cat' // Reset button text
+        })
     }
 
     return (
         <div className='space-y-6'>
             <CatAnimation
                 emotion={captchaState.currentEmotion}
-                isLoading={captchaState.isLoading}
             />
+
+            <div className={`ai-reasoning-bubble ${captchaState.aiReasoning.trim() !== '' ? 'show' : ''}`}>
+                {captchaState.aiReasoning}
+            </div>
 
             <TextInput
                 value={captchaState.userInput}
                 onChange={handleInputChange}
+                onSubmit={handleSubmit} // Pass handleSubmit for Enter key
                 placeholder='Tell a joke or say something nice to make the cat happy!'
                 disabled={captchaState.isLoading}
             />
 
             <SubmitButton
-                onClick={handleSubmit}
+                onClick={captchaState.buttonState === 'success' || captchaState.buttonState === 'error' ? handleReset : handleSubmit}
                 state={captchaState.buttonState}
                 isLoading={captchaState.isLoading}
-                disabled={!captchaState.userInput.trim()}
+                disabled={!captchaState.userInput.trim() && captchaState.buttonState === 'neutral'}
+                buttonText={captchaState.displayButtonText}
             />
-
-            {captchaState.isComplete && (
-                <div className='text-center text-success-600 font-semibold'>
-                     Success! The cat is happy now!
-                </div>
-            )}
         </div>
     )
 }

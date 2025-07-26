@@ -1,204 +1,130 @@
-﻿import axios from 'axios'
+﻿import axios from 'axios';
+
+export type Emotion = 'happy' | 'sad' | 'bored' | 'grumpy';
 
 export interface AIAnalysis {
-  sentiment: 'positive' | 'negative' | 'neutral'
-  humorScore: number // 0-10 scale
-  isAppreciative: boolean
-  isFunny: boolean
-  confidence: number
-  reasoning: string
-}
-
-export interface AIThresholds {
-  humorThreshold: number // Minimum humor score (0-10)
-  sentimentThreshold: number // Minimum positive sentiment confidence
-  appreciationKeywords: string[] // Keywords that indicate appreciation
-}
-
-const DEFAULT_THRESHOLDS: AIThresholds = {
-  humorThreshold: 6.0, // Medium humor threshold
-  sentimentThreshold: 0.7, // 70% confidence for positive sentiment
-  appreciationKeywords: [
-    'beautiful', 'amazing', 'wonderful', 'fantastic', 'awesome', 'great',
-    'love', 'like', 'appreciate', 'thank', 'grateful', 'blessed',
-    'cute', 'adorable', 'sweet', 'lovely', 'charming', 'delightful'
-  ]
+  emotion: Emotion;
+  isFunny: boolean;
+  isKind: boolean;
+  confidence: number;
+  reasoning: string;
 }
 
 class AIService {
-  private apiKey: string
-  private thresholds: AIThresholds
+  private apiKey: string;
 
-  constructor(apiKey?: string, thresholds?: Partial<AIThresholds>) {
-    this.apiKey = apiKey || import.meta.env.VITE_OPENAI_API_KEY || ''
-    this.thresholds = { ...DEFAULT_THRESHOLDS, ...thresholds }
+  constructor(apiKey?: string) {
+    this.apiKey = apiKey || import.meta.env.VITE_GEMINI_API_KEY || '';
   }
 
   async analyzeUserInput(userInput: string): Promise<AIAnalysis> {
     if (!this.apiKey) {
-      throw new Error('OpenAI API key not configured')
+      throw new Error('Gemini API key not configured');
     }
 
-    const prompt = this.buildAnalysisPrompt(userInput)
-    
+    const prompt = this.buildGrumpyCatPrompt(userInput);
+
     try {
       const response = await axios.post(
-        'https://api.openai.com/v1/chat/completions',
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${this.apiKey}`,
         {
-          model: 'gpt-3.5-turbo',
-          messages: [
-            {
-              role: 'system',
-              content: 'You are an expert at analyzing humor, sentiment, and appreciation in text. Provide detailed analysis with specific scores and reasoning.'
-            },
+          contents: [
             {
               role: 'user',
-              content: prompt
-            }
+              parts: [{ text: prompt }],
+            },
           ],
-          temperature: 0.3,
-          max_tokens: 500
+          generationConfig: {
+            temperature: 0.5,
+            maxOutputTokens: 100,
+          },
         },
         {
           headers: {
-            'Authorization': Bearer ,
-            'Content-Type': 'application/json'
-          }
+            'Content-Type': 'application/json',
+          },
         }
-      )
+      );
 
-      const analysis = this.parseAIResponse(response.data.choices[0].message.content)
-      return this.applyThresholds(analysis, userInput)
+      return this.parseAIResponse(response.data.candidates[0].content.parts[0].text);
     } catch (error) {
-      console.error('AI analysis failed:', error)
-      throw new Error('Failed to analyze user input')
+      console.error('AI analysis failed:', error);
+      throw new Error('Failed to analyze user input');
     }
   }
 
-  private buildAnalysisPrompt(userInput: string): string {
-    return 
-Analyze the following text for humor, sentiment, and appreciation. Provide your response in JSON format:
+  private buildGrumpyCatPrompt(userInput: string): string {
+    return `
+      You are a grumpy cat. Your default and most common emotion is 'grumpy'.
+      You only change from 'grumpy' if the user's input strongly and clearly triggers another emotion.
+      Your standards are high, but you can be impressed or saddened.
 
-Text: \"\"
+      Analyze the following text from the perspective of a grumpy cat:
 
-Please analyze:
-1. Sentiment (positive/negative/neutral)
-2. Humor score (0-10, where 10 is extremely funny)
-3. Whether it shows appreciation for a cat
-4. Overall confidence in the analysis
-5. Brief reasoning for your assessment
+      Text: "${userInput}"
 
-Respond with JSON in this exact format:
-{
-  \"sentiment\": \"positive|negative|neutral\",
-  \"humorScore\": 0-10,
-  \"isAppreciative\": true|false,
-  \"isFunny\": true|false,
-  \"confidence\": 0.0-1.0,
-  \"reasoning\": \"brief explanation\"
-}
+      Based on this, determine your emotional response. Your possible emotions are: 'happy', 'sad', 'bored'.
 
+      - 'happy': If you find the user's input genuinely funny (a decent joke, clever wordplay, or a good pun) OR if they say something sincerely kind and appreciative towards you or cats in general (e.g., "You are absolutely stunning and the most wonderful cat in the world"). It doesn't have to be groundbreaking, just genuinely positive and not generic.
+      - 'sad': If the user says something that would make you sad (e.g., about loss, loneliness, a melancholic observation, or a personal tragedy like "my grandma died").
+      - 'bored': If the input is neutral, uninteresting, generic, or doesn't evoke any strong emotion (e.g., "You are cute"). This is for inputs that are not quite 'grumpy' but also not 'happy' or 'sad'.
+
+      Also, determine:
+      - isFunny: boolean (true for decent humor)
+      - isKind: boolean (true for sincere kindness)
+
+      Respond STRICTLY with JSON in this exact format. Do NOT include any other text, explanations, or formatting outside the JSON. Ensure the JSON is valid and complete.
+
+      Example of expected JSON response:
+      {
+        "emotion": "happy|sad|bored",
+        "isFunny": true|false,
+        "isKind": true|false,
+        "confidence": 0.0-1.0,
+        "reasoning": "A brief explanation for my decision, speaking directly to you. Keep it concise and cat-like. Max two lines. For example:\n- If bored: 'You call that a joke? I've heard better from a hairball. Try harder, human.' or 'Is that all you've got? My litter box is more entertaining.'\n- If happy: 'Finally, someone who understands true humor. You've earned a purr... almost. Don't get used to it.' or 'You actually made me... not grumpy. Impressive.'\n- If sad: 'Your sadness is... palpable. Now leave me alone to wallow.' or 'Even I can't ignore that level of despair. Go away.'"
+      }
+    `;
   }
 
   private parseAIResponse(response: string): AIAnalysis {
+    console.log('Raw LLM Response for parsing:', response); // Log the raw response
     try {
-      // Extract JSON from response (in case there's extra text)
-      const jsonMatch = response.match(/\{[\s\S]*\}/)
-      if (!jsonMatch) {
-        throw new Error('No JSON found in response')
+      // Attempt to find the first and last curly brace to extract the JSON string
+      const firstCurly = response.indexOf('{');
+      const lastCurly = response.lastIndexOf('}');
+
+      if (firstCurly === -1 || lastCurly === -1) {
+        throw new Error('No JSON found in response');
       }
 
-      const parsed = JSON.parse(jsonMatch[0])
-      
+      const jsonString = response.substring(firstCurly, lastCurly + 1);
+      console.log('Extracted JSON string:', jsonString);
+
+      const parsed = JSON.parse(jsonString);
+
+      // Validate and default emotion
+      const validEmotions: Emotion[] = ['happy', 'sad', 'bored'];
+      const emotion: Emotion = validEmotions.includes(parsed.emotion) ? parsed.emotion : 'bored'; // Default to bored if AI returns something unexpected
+
       return {
-        sentiment: parsed.sentiment || 'neutral',
-        humorScore: Math.max(0, Math.min(10, parsed.humorScore || 0)),
-        isAppreciative: Boolean(parsed.isAppreciative),
+        emotion: emotion,
         isFunny: Boolean(parsed.isFunny),
+        isKind: Boolean(parsed.isKind),
         confidence: Math.max(0, Math.min(1, parsed.confidence || 0)),
-        reasoning: parsed.reasoning || 'No reasoning provided'
-      }
+        reasoning: parsed.reasoning || 'No reasoning provided.',
+      };
     } catch (error) {
-      console.error('Failed to parse AI response:', error)
-      // Fallback analysis
+      console.error('Failed to parse AI response:', error);
       return {
-        sentiment: 'neutral',
-        humorScore: 5,
-        isAppreciative: false,
+        emotion: 'bored', // Default to bored on parsing error
         isFunny: false,
+        isKind: false,
         confidence: 0.5,
-        reasoning: 'Failed to parse AI response'
-      }
+        reasoning: 'I couldn\'t even be bothered to understand that.',
+      };
     }
-  }
-
-  private applyThresholds(analysis: AIAnalysis, userInput: string): AIAnalysis {
-    const lowerInput = userInput.toLowerCase()
-    
-    // Check for appreciation keywords
-    const hasAppreciationKeywords = this.thresholds.appreciationKeywords.some(
-      keyword => lowerInput.includes(keyword.toLowerCase())
-    )
-
-    // Determine if input meets thresholds
-    const meetsHumorThreshold = analysis.humorScore >= this.thresholds.humorThreshold
-    const meetsSentimentThreshold = analysis.confidence >= this.thresholds.sentimentThreshold
-    
-    const isAppreciative = analysis.isAppreciative || hasAppreciationKeywords
-    const isFunny = analysis.isFunny && meetsHumorThreshold
-
-    return {
-      ...analysis,
-      isAppreciative,
-      isFunny,
-      reasoning: ${analysis.reasoning} (Humor threshold: , Sentiment confidence: %)
-    }
-  }
-
-  // Method to update thresholds
-  updateThresholds(newThresholds: Partial<AIThresholds>) {
-    this.thresholds = { ...this.thresholds, ...newThresholds }
-  }
-
-  // Method to get current thresholds
-  getThresholds(): AIThresholds {
-    return { ...this.thresholds }
-  }
-
-  // Simulate AI response for development/testing
-  simulateAnalysis(userInput: string): Promise<AIAnalysis> {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const lowerInput = userInput.toLowerCase()
-        
-        // Simple keyword-based simulation
-        const hasHumorKeywords = ['joke', 'funny', 'lol', 'haha', 'hilarious', 'comedy'].some(
-          word => lowerInput.includes(word)
-        )
-        
-        const hasAppreciationKeywords = this.thresholds.appreciationKeywords.some(
-          keyword => lowerInput.includes(keyword.toLowerCase())
-        )
-
-        const hasNegativeKeywords = ['stupid', 'ugly', 'hate', 'terrible', 'awful', 'bad'].some(
-          word => lowerInput.includes(word)
-        )
-
-        const humorScore = hasHumorKeywords ? 7 + Math.random() * 3 : Math.random() * 5
-        const sentiment = hasNegativeKeywords ? 'negative' : (hasAppreciationKeywords ? 'positive' : 'neutral')
-        const confidence = 0.6 + Math.random() * 0.3
-
-        resolve({
-          sentiment,
-          humorScore,
-          isAppreciative: hasAppreciationKeywords,
-          isFunny: hasHumorKeywords && humorScore >= this.thresholds.humorThreshold,
-          confidence,
-          reasoning: Simulated analysis: , 
-        })
-      }, 1000 + Math.random() * 1000) // 1-2 second delay
-    })
   }
 }
 
-export default AIService
+export default AIService;
+

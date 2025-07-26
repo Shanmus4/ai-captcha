@@ -1,14 +1,12 @@
 ﻿import React, { useEffect, useRef } from 'react'
 import { Emotion } from '../types/captcha'
-import { Loader2 } from 'lucide-react'
 import lottie from 'lottie-web'
 
 interface CatAnimationProps {
     emotion: Emotion
-    isLoading: boolean
 }
 
-const CatAnimation: React.FC<CatAnimationProps> = ({ emotion, isLoading }) => {
+const CatAnimation: React.FC<CatAnimationProps> = ({ emotion }) => {
     const containerRef = useRef<HTMLDivElement>(null)
     const animationRef = useRef<any>(null)
 
@@ -17,11 +15,11 @@ const CatAnimation: React.FC<CatAnimationProps> = ({ emotion, isLoading }) => {
         grumpy: '/animations/cat-grumpy.json',
         happy: '/animations/cat-happy.json',
         sad: '/animations/cat-sad.json',
-        angry: '/animations/cat-angry.json'
+        bored: '/animations/cat-grumpy.json' // Using grumpy animation for bored for now
     }
 
     useEffect(() => {
-        if (!containerRef.current || isLoading) return
+        if (!containerRef.current) return
 
         // Destroy previous animation
         if (animationRef.current) {
@@ -39,7 +37,7 @@ const CatAnimation: React.FC<CatAnimationProps> = ({ emotion, isLoading }) => {
             animationRef.current = lottie.loadAnimation({
                 container: containerRef.current,
                 renderer: 'svg',
-                loop: emotion === 'grumpy', // Only grumpy loops continuously
+                loop: emotion === 'grumpy' || emotion === 'bored', // Grumpy and bored loop continuously
                 autoplay: true,
                 path: animationPath
             })
@@ -64,26 +62,15 @@ const CatAnimation: React.FC<CatAnimationProps> = ({ emotion, isLoading }) => {
                 animationRef.current.destroy()
             }
         }
-    }, [emotion, isLoading])
-
-    if (isLoading) {
-        return (
-            <div className=\"cat-animation-container\">
-                <div className=\"flex flex-col items-center space-y-4\">
-                    <Loader2 className=\"w-12 h-12 animate-spin text-primary-500\" />
-                    <p className=\"text-gray-600\">Analyzing your message...</p>
-                </div>
-            </div>
-        )
-    }
+    }, [emotion]) // Removed isLoading from dependency array
 
     return (
-        <div className=\"cat-animation-container\">
-            <div className=\"text-center\">
+        <div className="cat-animation-container">
+            <div className="text-center">
                 {/* Lottie animation container */}
                 <div 
                     ref={containerRef} 
-                    className=\"w-32 h-32 mx-auto mb-4\"
+                    className="w-32 h-32 mx-auto mb-4"
                     style={{ 
                         minHeight: '128px',
                         display: 'flex',
@@ -92,14 +79,14 @@ const CatAnimation: React.FC<CatAnimationProps> = ({ emotion, isLoading }) => {
                     }}
                 >
                     {/* Fallback emoji if Lottie fails to load */}
-                    <span className=\"text-4xl\">
-                        {emotion === 'happy' && ''}
-                        {emotion === 'sad' && ''}
-                        {emotion === 'angry' && ''}
-                        {emotion === 'grumpy' && ''}
+                    <span className="text-4xl">
+                        {emotion === 'happy' && '😊'}
+                        {emotion === 'sad' && '😢'}
+                        {emotion === 'grumpy' && '😒'}
+                        {emotion === 'bored' && '😑'}
                     </span>
                 </div>
-                <p className=\"text-gray-600 capitalize\">
+                <p className="text-gray-600 capitalize">
                     Cat is feeling {emotion}
                 </p>
             </div>

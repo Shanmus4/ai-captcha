@@ -1,4 +1,4 @@
-export type Emotion = 'grumpy' | 'happy' | 'sad' | 'angry'
+export type Emotion = 'happy' | 'sad' | 'bored' | 'grumpy'
 
 export type ButtonState = 'neutral' | 'success' | 'error'
 
@@ -11,10 +11,11 @@ export interface CaptchaState {
 }
 
 export interface AIAnalysis {
-    sentiment: 'positive' | 'negative' | 'neutral'
-    humorScore: number
-    isAppropriate: boolean
-    confidence: number
+  emotion: Emotion;
+  isFunny: boolean;
+  isKind: boolean;
+  confidence: number;
+  reasoning: string;
 }
 
 export interface LottieAnimation {

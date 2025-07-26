@@ -10,13 +10,16 @@
   body {
     margin: 0;
     min-height: 100vh;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 
 @layer components {
-  .captcha-container {
-    @apply max-w-md mx-auto p-6 bg-white rounded-lg shadow-xl;
+  .main-container {
+    @apply w-full p-4 transition-all duration-300 ease-in-out;
+    max-width: 412px;
   }
   
   .cat-animation-container {
@@ -28,7 +31,8 @@
   }
   
   .submit-button {
-    @apply w-full py-3 px-6 rounded-lg font-semibold text-white transition-all duration-200 transform hover:scale-105 active:scale-95;
+    @apply w-full py-3 px-6 rounded-lg font-semibold text-white transition-colors duration-200;
+    color: white; /* Ensure text is visible */
   }
   
   .submit-button.success {
@@ -41,5 +45,31 @@
   
   .submit-button.neutral {
     @apply bg-primary-500 hover:bg-primary-600;
+  }
+
+  .ai-reasoning-bubble {
+    @apply relative bg-yellow-200 p-4 rounded-lg shadow-md text-gray-800 font-comic text-center w-full;
+    margin-top: 1.5rem; /* Adjust as needed */
+    margin-bottom: 1.5rem; /* Adjust as needed */
+    max-height: 0;
+    opacity: 0;
+    transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out;
+  }
+  
+  .ai-reasoning-bubble.show {
+    max-height: 200px; /* Increased value for smoother animation */
+    opacity: 1;
+  }
+  
+  .ai-reasoning-bubble:after {
+    content: '';
+    position: absolute;
+    top: -15px; /* Increased distance from bubble */
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 15px solid transparent; /* Increased size */
+    border-right: 15px solid transparent; /* Increased size */
+    border-bottom: 15px solid #fef08a; /* Match bubble background color */
+    z-index: 10; /* Ensure it's above other elements */
   }
 } 
