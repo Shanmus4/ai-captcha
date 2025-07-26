@@ -15,6 +15,7 @@ lerna-debug.log*
 .env.*.local
 *.env
 .envrc
+env.example
 
 # API Keys and Secrets
 *.key
