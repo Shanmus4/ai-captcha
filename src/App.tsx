@@ -10,11 +10,11 @@ function App() {
                 <p className="text-center text-gray-600 mb-2">
                     Make the cat happy with a joke or kind words!
                 </p>
-                <p className="text-center text-gray-500 text-sm mt-1">
-                    GitHub: <a href="https://github.com/Shanmus4/ai-captcha" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">Shanmus4/ai-captcha</a>
-                </p>
-            </div>
+                </div>
             <CaptchaInterface />
+            <p className="github-link text-center text-gray-500 text-sm">
+                GitHub: <a href="https://github.com/Shanmus4/ai-captcha" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">Shanmus4/ai-captcha</a>
+            </p>
         </div>
     )
 }
