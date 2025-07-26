@@ -1,8 +1,11 @@
-import React, { useState } from 'react'
+﻿import React, { useState } from 'react'
 import CatAnimation from './CatAnimation'
 import TextInput from './TextInput'
 import SubmitButton from './SubmitButton'
 import { CaptchaState } from '../types/captcha'
+import AIService from '../services/aiService'
+
+const aiService = new AIService()
 
 const CaptchaInterface: React.FC = () => {
     const [captchaState, setCaptchaState] = useState<CaptchaState>({
@@ -30,30 +33,52 @@ const CaptchaInterface: React.FC = () => {
         }))
 
         try {
-            // TODO: Implement AI analysis
-            // For now, simulate AI response
-            const isPositive = Math.random() > 0.5
+            // Use real AI analysis instead of random simulation
+            const analysis = await aiService.analyzeUserInput(captchaState.userInput)
+            
+            // Determine if the input is positive based on AI analysis
+            const isPositive = analysis.isFunny || analysis.isAppreciative
+            
+            // Set emotion based on AI analysis
+            let emotion: 'happy' | 'sad' | 'angry' | 'grumpy'
+            if (isPositive) {
+                emotion = 'happy'
+            } else if (analysis.sentiment === 'negative') {
+                emotion = 'angry'
+            } else {
+                emotion = 'sad'
+            }
 
-            setTimeout(() => {
-                setCaptchaState(prev => ({
-                    ...prev,
-                    isLoading: false,
-                    currentEmotion: isPositive ? 'happy' : 'sad',
-                    buttonState: isPositive ? 'success' : 'error',
-                    isComplete: isPositive
-                }))
-            }, 2000)
-        } catch (error) {
             setCaptchaState(prev => ({
                 ...prev,
                 isLoading: false,
-                buttonState: 'error'
+                currentEmotion: emotion,
+                buttonState: isPositive ? 'success' : 'error',
+                isComplete: isPositive
+            }))
+
+            // Log AI analysis for debugging
+            console.log('AI Analysis:', analysis)
+            
+        } catch (error) {
+            console.error('AI analysis failed:', error)
+            
+            // Fallback to simulation if AI fails
+            const fallbackAnalysis = await aiService.simulateAnalysis(captchaState.userInput)
+            const isPositive = fallbackAnalysis.isFunny || fallbackAnalysis.isAppreciative
+            
+            setCaptchaState(prev => ({
+                ...prev,
+                isLoading: false,
+                currentEmotion: isPositive ? 'happy' : 'sad',
+                buttonState: isPositive ? 'success' : 'error',
+                isComplete: isPositive
             }))
         }
     }
 
     return (
-        <div className="space-y-6">
+        <div className='space-y-6'>
             <CatAnimation
                 emotion={captchaState.currentEmotion}
                 isLoading={captchaState.isLoading}
@@ -62,7 +87,7 @@ const CaptchaInterface: React.FC = () => {
             <TextInput
                 value={captchaState.userInput}
                 onChange={handleInputChange}
-                placeholder="Tell a joke or say something nice to make the cat happy!"
+                placeholder='Tell a joke or say something nice to make the cat happy!'
                 disabled={captchaState.isLoading}
             />
 
@@ -74,12 +99,12 @@ const CaptchaInterface: React.FC = () => {
             />
 
             {captchaState.isComplete && (
-                <div className="text-center text-success-600 font-semibold">
-                    🎉 Success! The cat is happy now!
+                <div className='text-center text-success-600 font-semibold'>
+                     Success! The cat is happy now!
                 </div>
             )}
         </div>
     )
 }
 
-export default CaptchaInterface 
+export default CaptchaInterface
