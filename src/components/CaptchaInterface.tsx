@@ -126,30 +126,34 @@ const CaptchaInterface: React.FC = () => {
     }
 
     return (
-        <div className='space-y-6'>
-            <CatAnimation
-                emotion={captchaState.currentEmotion}
-            />
+        <div className='flex flex-col h-full'>
+            <div className="cat-and-bubble-group flex-grow flex flex-col justify-center items-center">
+                <CatAnimation
+                    emotion={captchaState.currentEmotion}
+                />
 
-            <div className={`ai-reasoning-bubble ${captchaState.aiReasoning.trim() !== '' ? 'show' : ''}`}>
-                {captchaState.aiReasoning}
+                <div className={`ai-reasoning-bubble ${captchaState.aiReasoning.trim() !== '' ? 'show' : ''}`}>
+                    {captchaState.aiReasoning}
+                </div>
             </div>
 
-            <TextInput
-                value={captchaState.userInput}
-                onChange={handleInputChange}
-                onSubmit={handleSubmit} // Pass handleSubmit for Enter key
-                placeholder='Tell a joke or say something nice to make the cat happy!'
-                disabled={captchaState.isLoading}
-            />
+            <div className="input-and-button-group flex-shrink-0">
+                <TextInput
+                    value={captchaState.userInput}
+                    onChange={handleInputChange}
+                    onSubmit={handleSubmit} // Pass handleSubmit for Enter key
+                    placeholder='Tell a joke or say something nice to make the cat happy!'
+                    disabled={captchaState.isLoading}
+                />
 
-            <SubmitButton
-                onClick={captchaState.buttonState === 'success' || captchaState.buttonState === 'error' ? handleReset : handleSubmit}
-                state={captchaState.buttonState}
-                isLoading={captchaState.isLoading}
-                disabled={!captchaState.userInput.trim() && captchaState.buttonState === 'neutral'}
-                buttonText={captchaState.displayButtonText}
-            />
+                <SubmitButton
+                    onClick={captchaState.buttonState === 'success' || captchaState.buttonState === 'error' ? handleReset : handleSubmit}
+                    state={captchaState.buttonState}
+                    isLoading={captchaState.isLoading}
+                    disabled={!captchaState.userInput.trim() && captchaState.buttonState === 'neutral'}
+                    buttonText={captchaState.displayButtonText}
+                />
+            </div>
         </div>
     )
 }

@@ -35,7 +35,7 @@ class AIService {
             },
           ],
           generationConfig: {
-            temperature: 0.5,
+            temperature: 0.7, // Increased temperature for more creative responses
             maxOutputTokens: 100,
           },
         },
@@ -65,9 +65,9 @@ class AIService {
 
       Based on this, determine your emotional response. Your possible emotions are: 'happy', 'sad', 'bored'.
 
-      - 'happy': If you find the user's input genuinely funny (a decent joke, clever wordplay, or a good pun) OR if they say something sincerely kind and appreciative towards you or cats in general (e.g., "You are absolutely stunning and the most wonderful cat in the world"). It doesn't have to be groundbreaking, just genuinely positive and not generic.
+      - 'happy': If you find the user's input genuinely funny (a decent joke, clever wordplay, or a good pun) OR if they offer strong, explicit appreciation towards you or cats in general (e.g., "You are absolutely stunning and the most wonderful cat in the world! I applaud you!"). It doesn't have to be groundbreaking, just genuinely positive and not generic. You should feel truly impressed or adored. Good amusing attempt at humor should make you happy. But make sure you don't find everything funny.
       - 'sad': If the user says something that would make you sad (e.g., about loss, loneliness, a melancholic observation, or a personal tragedy like "my grandma died").
-      - 'bored': If the input is neutral, uninteresting, generic, or doesn't evoke any strong emotion (e.g., "You are cute"). This is for inputs that are not quite 'grumpy' but also not 'happy' or 'sad'.
+      - 'bored': If the input is neutral, uninteresting, generic, or doesn't evoke any strong emotion (e.g., "You are cute" or a simple "hello"). This is for inputs that are not quite 'grumpy' but also not 'happy' or 'sad'.
 
       Also, determine:
       - isFunny: boolean (true for decent humor)
@@ -81,9 +81,9 @@ class AIService {
         "isFunny": true|false,
         "isKind": true|false,
         "confidence": 0.0-1.0,
-        "reasoning": "A brief explanation for my decision, speaking directly to you. Keep it concise and cat-like. Max two lines. For example:\n- If bored: 'You call that a joke? I've heard better from a hairball. Try harder, human.' or 'Is that all you've got? My litter box is more entertaining.'\n- If happy: 'Finally, someone who understands true humor. You've earned a purr... almost. Don't get used to it.' or 'You actually made me... not grumpy. Impressive.'\n- If sad: 'Your sadness is... palpable. Now leave me alone to wallow.' or 'Even I can't ignore that level of despair. Go away.'"
+        "reasoning": "A brief, clever, and cat-like explanation for my decision, speaking directly to you. Keep it concise (max two lines) and avoid repetitive phrases. Be creative and reflect my grumpy, discerning personality."
       }
-    `;
+    `
   }
 
   private parseAIResponse(response: string): AIAnalysis {

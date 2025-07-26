@@ -11,8 +11,8 @@
     margin: 0;
     min-height: 100vh;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column; /* Changed to column to allow padding-top */
+    align-items: center; /* Center horizontally */
   }
 }
 
@@ -20,10 +20,24 @@
   .main-container {
     @apply w-full p-4 transition-all duration-300 ease-in-out;
     max-width: 412px;
+    height: 80vh;
+    padding-top: 10vh; /* Added padding-top */
+  }
+  
+  .text-group {
+    @apply flex flex-col items-center justify-center mb-6;
+  }
+
+  .cat-and-bubble-group {
+    @apply flex flex-col items-center justify-center mb-6;
+  }
+
+  .input-and-button-group {
+    @apply flex flex-col space-y-4;
   }
   
   .cat-animation-container {
-    @apply w-full h-64 bg-gray-50 rounded-lg flex items-center justify-center mb-6;
+    @apply w-full h-64 rounded-lg flex items-center justify-center;
   }
   
   .input-field {
@@ -44,13 +58,14 @@
   }
   
   .submit-button.neutral {
-    @apply bg-primary-500 hover:bg-primary-600;
+    @apply bg-customGray-darker hover:bg-customGray-darker;
   }
 
   .ai-reasoning-bubble {
-    @apply relative bg-yellow-200 p-4 rounded-lg shadow-md text-gray-800 font-comic text-center w-full;
+    @apply relative bg-yellow-200 p-4 rounded-lg shadow-md text-gray-800 font-comic text-center w-full text-sm; /* Reduced font size */
     margin-top: 1.5rem; /* Adjust as needed */
     margin-bottom: 1.5rem; /* Adjust as needed */
+    min-height: 0; /* Ensure it always takes up space */
     max-height: 0;
     opacity: 0;
     transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out;
@@ -59,6 +74,7 @@
   .ai-reasoning-bubble.show {
     max-height: 200px; /* Increased value for smoother animation */
     opacity: 1;
+    min-height: 50px; /* Give it a minimum height when shown */
   }
   
   .ai-reasoning-bubble:after {

@@ -27,20 +27,21 @@ The Grumpy Cat Interactive Captcha is a fun, engaging web application that turns
 
 ## ✨ Features
 
-- **Interactive Cat Character**: Animated grumpy cat with multiple emotional states
-- **AI-Powered Sentiment Analysis**: Intelligent evaluation of user input
-- **Dynamic Emotional Responses**: Cat animations based on AI analysis
-- **Visual Feedback System**: Color-coded button states and success indicators
-- **Continuous Animation Loop**: Engaging idle animations
-- **Responsive Design**: Works on all devices
-- **Modern UI**: Clean, accessible interface
+- **Interactive Cat Character**: Animated grumpy cat with multiple emotional states (grumpy, happy, sad, bored)
+- **AI-Powered Emotion Analysis**: Intelligent evaluation of user input using Google Gemini API.
+- **Dynamic Emotional Responses**: Cat animations based on AI analysis, including specific Lottie animations for each emotion.
+- **Visual Feedback System**: Color-coded button states and AI reasoning displayed in a comic-style bubble.
+- **Continuous Animation Loop**: Engaging idle animations for grumpy and bored states.
+- **Modern UI**: Clean, accessible interface with a fixed max-width and improved spacing.
+- **SEO Optimized**: Enhanced meta tags, Open Graph, and Twitter card support.
+- **Client-Side Logging**: Basic logging of user inputs with timestamps (for development/debugging only).
 
 ## 🛠️ Tech Stack
 
 - **Frontend**: React 18, TypeScript, Vite
 - **Styling**: Tailwind CSS
 - **Animations**: Lottie Web
-- **AI Integration**: OpenAI GPT (planned)
+- **AI Integration**: Google Gemini API
 - **Icons**: Lucide React
 - **Testing**: Vitest
 - **Deployment**: Vercel/Netlify
@@ -68,16 +69,12 @@ The Grumpy Cat Interactive Captcha is a fun, engaging web application that turns
 
 3. **Configure environment variables**
    ```bash
-   cp env.example .env
+   cp .env.example .env
    ```
    
-   Edit `.env` file with your configuration:
+   Edit `.env` file with your Gemini API key:
    ```env
-   VITE_OPENAI_API_KEY=your-openai-api-key
-   VITE_APP_TITLE=Grumpy Cat Captcha
-   VITE_APP_DESCRIPTION=An interactive captcha system featuring a grumpy cat
-   VITE_DEV_MODE=true
-   VITE_SIMULATE_AI=true
+   VITE_GEMINI_API_KEY=your-gemini-api-key
    ```
 
 4. **Run the development server**
@@ -93,44 +90,46 @@ The Grumpy Cat Interactive Captcha is a fun, engaging web application that turns
 ### Basic Usage
 
 1. **See the Grumpy Cat**
-   - The cat starts in a grumpy state with continuous animation
-   - Watch the idle animation while thinking of what to say
+   - The cat starts in a grumpy state with continuous animation.
+   - The UI elements are spread out evenly with a fixed max-width.
 
 2. **Make the Cat Happy**
-   - Type a joke or kind words in the text area
-   - Click "Make Cat Happy" to submit your message
-   - Wait for AI analysis (simulated for now)
+   - Type a joke or kind words in the text area.
+   - Press Enter or click "Tell Grumpy Cat" to submit your message.
+   - The button text will change to "Analyzing..." while processing.
 
 3. **See the Response**
-   - If your message is positive: Cat becomes happy with green button
-   - If your message is negative: Cat becomes sad with red button
-   - Try again if needed!
+   - The cat's animation will change based on the AI's emotional analysis (happy, sad, or bored).
+   - A comic-style speech bubble will appear with the cat's reasoning, speaking directly to you.
+   - If the cat is happy, the button will say "Grumpy Cat is Happy!".
+   - If the cat is sad or bored, the button will say "Try Again".
+   - Clicking "Try Again" will reset the input and the cat to its grumpy state.
 
-### Development Mode
+### Client-Side Logging
 
-Currently, the AI analysis is simulated with random responses. The system will:
-- Show loading state for 2 seconds
-- Randomly decide if the input is positive or negative
-- Trigger appropriate cat emotion and button state
+User inputs are logged to the browser's developer console for debugging purposes. This is not a persistent logging solution for production.
 
 ## 🛠️ Development
 
 ### Project Structure
 
 ```
-src/
-├── components/          # React components
-│   ├── CaptchaInterface.tsx
-│   ├── CatAnimation.tsx
-│   ├── TextInput.tsx
-│   └── SubmitButton.tsx
-├── types/              # TypeScript type definitions
-│   └── captcha.ts
-├── services/           # API services (planned)
-├── utils/              # Utility functions
-├── App.tsx             # Main app component
-├── main.tsx            # Entry point
-└── index.css           # Global styles
+ai-captcha/
+├── src/                    # Source code
+│   ├── components/         # React components
+│   ├── types/             # TypeScript type definitions
+│   ├── services/          # API services (AI, Logging)
+│   ├── App.tsx            # Main app component
+│   ├── main.tsx           # Entry point
+│   ├── index.css          # Global styles
+│   └── vite-env.d.ts      # Vite environment type definitions
+├── public/                # Static assets (Lottie animations)
+├── .taskmaster/           # Task management
+├── package.json           # Dependencies and scripts
+├── vite.config.ts         # Vite configuration
+├── tailwind.config.js     # Tailwind CSS configuration
+├── tsconfig.json          # TypeScript configuration
+└── README.md              # Project documentation
 ```
 
 ### Available Scripts
@@ -143,40 +142,9 @@ src/
 - `npm run type-check` - Run TypeScript type checking
 - `npm run test` - Run tests
 
-### Adding Lottie Animations
+### Lottie Animations
 
-1. **Prepare Animation Files**
-   - Create Lottie JSON files for each emotion
-   - Optimize for web (under 500KB each)
-   - Place in `public/animations/` directory
-
-2. **Update CatAnimation Component**
-   - Import Lottie player
-   - Load animations based on emotion prop
-   - Handle animation transitions
-
-3. **Animation States**
-   - `grumpy` - Default idle state (continuous loop)
-   - `happy` - Success state with thumbs up
-   - `sad` - Failure state with frown
-   - `angry` - Error state with angry expression
-
-### AI Integration (Planned)
-
-1. **OpenAI API Setup**
-   - Add API key to environment variables
-   - Create service for API communication
-   - Implement sentiment analysis prompts
-
-2. **Analysis Logic**
-   - Evaluate humor and sentiment
-   - Determine appropriateness
-   - Return confidence scores
-
-3. **Error Handling**
-   - API rate limiting
-   - Network failures
-   - Fallback responses
+Lottie animations for `grumpy`, `happy`, `sad`, and `bored` emotions are integrated. The `grumpy` and `bored` animations loop continuously. The `happy` and `sad` animations play once and then revert to the `grumpy` loop.
 
 ## 🚀 Deployment
 
@@ -209,11 +177,7 @@ src/
 Set these environment variables in your hosting platform:
 
 ```env
-VITE_OPENAI_API_KEY=your-production-openai-api-key
-VITE_APP_TITLE=Grumpy Cat Captcha
-VITE_APP_DESCRIPTION=An interactive captcha system featuring a grumpy cat
-VITE_DEV_MODE=false
-VITE_SIMULATE_AI=false
+VITE_GEMINI_API_KEY=your-production-gemini-api-key
 ```
 
 ## 🏗️ Technical Overview
@@ -226,36 +190,7 @@ VITE_SIMULATE_AI=false
 - **Build Tool**: Vite for fast development and optimized builds
 - **Type Safety**: TypeScript for better development experience
 - **Animations**: Lottie Web for smooth, performant animations
-
-### Folder Structure
-
-```
-ai-captcha/
-├── src/                    # Source code
-│   ├── components/         # React components
-│   ├── types/             # TypeScript definitions
-│   ├── services/          # API services (planned)
-│   ├── utils/             # Utility functions
-│   ├── App.tsx            # Main application component
-│   ├── main.tsx           # Application entry point
-│   └── index.css          # Global styles
-├── public/                # Static assets
-├── .taskmaster/           # Task management
-├── package.json           # Dependencies and scripts
-├── vite.config.ts         # Vite configuration
-├── tailwind.config.js     # Tailwind CSS configuration
-├── tsconfig.json          # TypeScript configuration
-└── README.md              # Project documentation
-```
-
-### Key Technologies Used
-
-- **React 18**: Modern React with concurrent features
-- **TypeScript**: Type-safe JavaScript development
-- **Vite**: Fast build tool and development server
-- **Tailwind CSS**: Utility-first CSS framework
-- **Lottie Web**: High-performance animations
-- **Lucide React**: Beautiful, customizable icons
+- **AI Integration**: Google Gemini API for emotion analysis
 
 ### Development Workflow
 
@@ -299,16 +234,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🐛 Known Issues
 
-- AI integration is currently simulated
-- Lottie animations need to be implemented
-- Mobile responsiveness needs testing
-- Accessibility features need enhancement
+- None currently.
 
 ## 🔮 Roadmap
 
-- [ ] Implement real AI sentiment analysis
-- [ ] Add Lottie animations for all emotions
-- [ ] Improve mobile responsiveness
 - [ ] Add sound effects
 - [ ] Implement analytics
 - [ ] Create integration examples

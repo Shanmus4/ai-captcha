@@ -15,7 +15,7 @@ const CatAnimation: React.FC<CatAnimationProps> = ({ emotion }) => {
         grumpy: '/animations/cat-grumpy.json',
         happy: '/animations/cat-happy.json',
         sad: '/animations/cat-sad.json',
-        bored: '/animations/cat-grumpy.json' // Using grumpy animation for bored for now
+        bored: '/animations/cat-bored.json'
     }
 
     useEffect(() => {
@@ -37,7 +37,7 @@ const CatAnimation: React.FC<CatAnimationProps> = ({ emotion }) => {
             animationRef.current = lottie.loadAnimation({
                 container: containerRef.current,
                 renderer: 'svg',
-                loop: emotion === 'grumpy' || emotion === 'bored', // Grumpy and bored loop continuously
+                loop: emotion === 'grumpy' || emotion === 'bored' || emotion === 'sad' || emotion === 'happy', // Grumpy, bored, sad, and happy loop continuously
                 autoplay: true,
                 path: animationPath
             })
@@ -70,7 +70,7 @@ const CatAnimation: React.FC<CatAnimationProps> = ({ emotion }) => {
                 {/* Lottie animation container */}
                 <div 
                     ref={containerRef} 
-                    className="w-32 h-32 mx-auto mb-4"
+                    className="w-full h-full mx-auto mb-4" // Changed to w-full h-full
                     style={{ 
                         minHeight: '128px',
                         display: 'flex',
@@ -86,9 +86,7 @@ const CatAnimation: React.FC<CatAnimationProps> = ({ emotion }) => {
                         {emotion === 'bored' && '😑'}
                     </span>
                 </div>
-                <p className="text-gray-600 capitalize">
-                    Cat is feeling {emotion}
-                </p>
+                {/* Removed the <p> tag displaying cat emotion */}
             </div>
         </div>
     )

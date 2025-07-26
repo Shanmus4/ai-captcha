@@ -42,6 +42,10 @@ export default {
           700: '#b91c1c',
           800: '#991b1b',
           900: '#7f1d1d',
+        },
+        customGray: {
+          DEFAULT: '#99a5be',
+          darker: '#6c758a' // Even darker shade
         }
       },
       fontFamily: {
