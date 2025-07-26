@@ -7,8 +7,11 @@ function App() {
                 <h1 className="text-3xl font-bold text-center text-gray-800 mb-2">
                     Grumpy Cat Captcha
                 </h1>
-                <p className="text-center text-gray-600 mb-6">
+                <p className="text-center text-gray-600 mb-2">
                     Make the cat happy with a joke or kind words!
+                </p>
+                <p className="text-center text-gray-500 text-sm mt-1">
+                    GitHub: <a href="https://github.com/Shanmus4/ai-captcha" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">Shanmus4/ai-captcha</a>
                 </p>
             </div>
             <CaptchaInterface />

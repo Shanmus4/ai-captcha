@@ -126,7 +126,7 @@ const CaptchaInterface: React.FC = () => {
     }
 
     return (
-        <div className='flex flex-col h-full'>
+        <div className='flex flex-col h-full justify-between'>
             <div className="cat-and-bubble-group flex-grow flex flex-col justify-center items-center">
                 <CatAnimation
                     emotion={captchaState.currentEmotion}

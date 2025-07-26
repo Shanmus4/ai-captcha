@@ -17,6 +17,7 @@ An interactive captcha system featuring a grumpy cat that users must make happy 
 - [Contributing](#contributing)
 - [License](#license)
 
+<a name="overview"></a>
 ## 📖 Overview
 
 The Grumpy Cat Interactive Captcha is a fun, engaging web application that turns traditional captcha verification into an entertaining experience. Users interact with a grumpy cat character by telling jokes or showing appreciation. The system uses AI to evaluate user input and triggers appropriate emotional animations based on the content's sentiment and humor level.
@@ -25,6 +26,7 @@ The Grumpy Cat Interactive Captcha is a fun, engaging web application that turns
 
 **Target users**: Website owners looking for unique captcha solutions, developers wanting to showcase AI integration, and anyone who appreciates humor and interactive experiences.
 
+<a name="features"></a>
 ## ✨ Features
 
 - **Interactive Cat Character**: Animated grumpy cat with multiple emotional states (grumpy, happy, sad, bored)
@@ -36,6 +38,7 @@ The Grumpy Cat Interactive Captcha is a fun, engaging web application that turns
 - **SEO Optimized**: Enhanced meta tags, Open Graph, and Twitter card support.
 - **Client-Side Logging**: Basic logging of user inputs with timestamps (for development/debugging only).
 
+<a name="tech-stack"></a>
 ## 🛠️ Tech Stack
 
 - **Frontend**: React 18, TypeScript, Vite
@@ -46,6 +49,7 @@ The Grumpy Cat Interactive Captcha is a fun, engaging web application that turns
 - **Testing**: Vitest
 - **Deployment**: Vercel/Netlify
 
+<a name="installation"></a>
 ## 🚀 Installation
 
 ### Prerequisites
@@ -85,6 +89,7 @@ The Grumpy Cat Interactive Captcha is a fun, engaging web application that turns
 5. **Open your browser**
    Navigate to `http://localhost:3000` (or the port shown in terminal)
 
+<a name="usage"></a>
 ## 📖 Usage
 
 ### Basic Usage
@@ -109,6 +114,7 @@ The Grumpy Cat Interactive Captcha is a fun, engaging web application that turns
 
 User inputs are logged to the browser's developer console for debugging purposes. This is not a persistent logging solution for production.
 
+<a name="development"></a>
 ## 🛠️ Development
 
 ### Project Structure
@@ -200,6 +206,7 @@ VITE_GEMINI_API_KEY=your-production-gemini-api-key
 4. **Hot Reload**: Vite provides instant feedback during development
 5. **Build Optimization**: Production builds are optimized for performance
 
+<a name="contributing"></a>
 ## 🤝 Contributing
 
 1. Fork the repository
@@ -216,15 +223,18 @@ VITE_GEMINI_API_KEY=your-production-gemini-api-key
 - Keep components modular and reusable
 - Follow the existing code style
 
+<a name="license"></a>
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
+<a name="author"></a>
 ## 👨‍💻 Author
 
 **Shanmugha Sundaram S S**
 - GitHub: [@Shanmus4](https://github.com/Shanmus4)
 
+<a name="acknowledgments"></a>
 ## 🙏 Acknowledgments
 
 - Lottie team for the amazing animation library
@@ -232,10 +242,12 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Tailwind CSS for the utility-first styling
 - Lucide for the beautiful icons
 
+<a name="known-issues"></a>
 ## 🐛 Known Issues
 
 - None currently.
 
+<a name="roadmap"></a>
 ## 🔮 Roadmap
 
 - [ ] Add sound effects
@@ -243,6 +255,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [ ] Create integration examples
 - [ ] Add multiple language support
 
+<a name="security"></a>
 ## 🔒 Security
 
 - Environment variables are properly configured and never committed to Git
